@@ -1,0 +1,50 @@
+Contract
+    - Storage
+        - Admin
+        - Channel
+            - Id
+            - IpfsHash
+                - name
+                - description
+                - ThumbnailUri
+                - Uri
+            - Owner
+            - Managers
+            - TotalSubscribers
+        - Subscribers
+            - Address(key)
+            - value
+                - [{Channel ids}]
+                - showAdv
+        - Notifications
+            - Id
+            - value 
+                - ChannelId
+                - IpfsHash
+                    - title
+                    - body
+                    - type
+                    - data
+                - (optional) -> [{Address}]
+
+    - entry_points
+        - createChannel
+        - deleteChannel
+        - addManager
+        - removeManager
+        - setOwner
+        - subscribe/unSubscribe (2 in 1)
+        - sendNotification
+        - sendAdv
+        - setAdvConsent
+        - setAdmin
+
+
+
+
+
+
+
+
+
+        

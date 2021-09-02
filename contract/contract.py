@@ -25,7 +25,7 @@ class TzPing(sp.Contract):
                     showAdv = sp.TBool
                 )
             ),
-            notificationId = sp.nat(0),
+            notificationId = sp.nat(1),
             notifications = sp.big_map(
                 tkey = sp.TNat,
                 tvalue = sp.TRecord(
@@ -138,21 +138,8 @@ class TzPing(sp.Contract):
         sp.verify(sp.sender == self.data.channels[params].owner, message="NOT_OWNER")
         del self.data.channels[params]
 
-    # subscribers = sp.big_map(
-    #             tkey = sp.TAddress,
-    #             tvalue = sp.TRecord(
-    #                 subscribedChannels = sp.TList(
-    #                     sp.TRecord(
-    #                         channelId = sp.TNat,
-    #                         subscribedOrNot = sp.TBool
-    #                     )
-    #                 ),
-    #                 showAdv = sp.TBool
-    #             )
-    #         ),
-
     @sp.entry_point
-    def subscribe(self, params):
+    def subscribeOrUnsubscribe(self, params):
         sp.set_type(params, sp.TList(sp.TRecord(
             channelId = sp.TNat,
             subscribedOrNot = sp.TBool
@@ -172,13 +159,34 @@ class TzPing(sp.Contract):
                 self.data.subscribers[sp.sender].subscribedChannels.remove(query.channelId)
                 self.data.channels[query.channelId].totalSubscribers = sp.as_nat(self.data.channels[query.channelId].totalSubscribers - 1)
 
-        
-        
+    @sp.entry_point
+    def advShowOrNot(self):
+        sp.if self.data.subscribers[sp.sender].showAdv:
+            self.data.subscribers[sp.sender].showAdv = False
+        sp.else:
+            self.data.subscribers[sp.sender].showAdv = True
 
-    # @sp.entry_point
-    # def sendNotifications(self, params):
-    #     pass
+    @sp.entry_point
+    def sendNotifications(self, params):
+        sp.set_type(params, sp.TRecord(
+            channelId = sp.TNat,
+            ipfsHash = sp.TString
+        ))
+
+        self.data.notifications[self.data.notificationId] = sp.record(
+            channelId = params.channelId,
+            ipfsHash = params.ipfsHash
+        )
+
+        self.data.notificationId += 1
 
     # @sp.entry_point
     # def sendAdv(self, params):
     #     pass
+
+   
+    # Todo
+    # adv functionality
+    # token deploy
+    # deploy contract
+    # test with our token

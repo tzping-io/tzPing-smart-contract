@@ -22,6 +22,8 @@ def test():
 
     subscriber1 = sp.test_account("subscriber1").address
     subscriber2 = sp.test_account("subscriber2").address
+    subscriber3 = sp.test_account("subscriber3").address
+    subscriber4 = sp.test_account("subscriber4").address
 
 
     scenario.h2("Initialise contract")
@@ -132,9 +134,80 @@ def test():
     # c1.deleteChannel(sp.nat(1)).run(sender = user2)
         
     scenario.h2("Subscribe channel")
-    c1.subscribe([sp.record(
+    c1.subscribeOrUnsubscribe([sp.record(
         channelId = 1, 
         subscribedOrNot = True
     )]).run(sender = subscriber1)
+
+    scenario.h2("Subscribe channel 2")
+    c1.subscribeOrUnsubscribe([sp.record(
+        channelId = 1, 
+        subscribedOrNot = True
+    )]).run(sender = subscriber2)
+
+    scenario.h2("Unsubscribe")
+    c1.subscribeOrUnsubscribe([sp.record(
+        channelId = 1, 
+        subscribedOrNot = False
+    )]).run(sender = subscriber2)
+
+    scenario.h2("Creating second channel")
+    c1.createChannel(
+        managers = sp.set([alice, bob]),
+        ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7",
+        token = sp.record(tokenAddress = c2.address, tokenId = 0)
+    ).run(sender = user1)
     
-    
+    scenario.h2("Subscribe second channel")
+    c1.subscribeOrUnsubscribe([sp.record(
+        channelId = 2, 
+        subscribedOrNot = True
+    )]).run(sender = subscriber1)
+
+    scenario.h2("Subscribe second channel subs3")
+    c1.subscribeOrUnsubscribe([sp.record(
+        channelId = 2, 
+        subscribedOrNot = True
+    )]).run(sender = subscriber3)
+
+    scenario.h2("Subscribe or unsubscribe multiple channels")
+    c1.subscribeOrUnsubscribe([
+        sp.record(
+            channelId = 1, 
+            subscribedOrNot = True
+        ),
+        sp.record(
+            channelId = 2,
+            subscribedOrNot = False
+        )
+    ]).run(sender = subscriber3)
+
+    scenario.h2("Subscribe multiple channels")
+    c1.subscribeOrUnsubscribe([
+        sp.record(
+            channelId = 1, 
+            subscribedOrNot = True
+        ),
+        sp.record(
+            channelId = 2,
+            subscribedOrNot = True
+        )
+    ]).run(sender = subscriber4)
+
+    scenario.h2("Disable adv")
+    c1.advShowOrNot().run(sender = subscriber1)
+
+    scenario.h2("Enable adv")
+    c1.advShowOrNot().run(sender = subscriber1)
+
+    scenario.h2("Send Notification")
+    c1.sendNotifications(
+        channelId = 1,
+        ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7"
+    )
+
+    scenario.h2("Send Notification")
+    c1.sendNotifications(
+        channelId = 2,
+        ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7"
+    )

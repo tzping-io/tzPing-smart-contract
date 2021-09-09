@@ -172,7 +172,7 @@ class TzPing(sp.Contract):
             channelId = sp.TNat,
             ipfsHash = sp.TString
         ))
-
+        
         self.data.notifications[self.data.notificationId] = sp.record(
             channelId = params.channelId,
             ipfsHash = params.ipfsHash

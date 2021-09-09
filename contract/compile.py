@@ -1,18 +1,11 @@
 import smartpy as sp
 
-MultisigEscrow = sp.io.import_script_from_url("file:contract.py").MultisigEscrow
+TzPing = sp.io.import_script_from_url("file:contract.py").TzPing
 
 sp.add_compilation_target(
-    "Multisig Escrow",
-    MultisigEscrow(
-        owners = sp.set(
-            [
-                sp.address("tz1f85LjxaHfWfPuNtZFg1aVBiaAkVnVnKsH"),
-                sp.address("tz1VPZyh4ZHjDDpgvznqQQXUCLcV7g91WGMz"),
-                sp.address("tz1fs7ki5nVyZGaLw6VpY8Rv5xvnh1pgj28G")
-            ]
-        ),
-        votesRequired = sp.nat(2)
+    "TzPing",
+    TzPing(
+        admin = sp.address("tz1f85LjxaHfWfPuNtZFg1aVBiaAkVnVnKsH")
     ),
     flags = [["default_record_layout", "comb"]]
 )

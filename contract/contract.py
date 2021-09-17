@@ -1,7 +1,7 @@
 import smartpy as sp
 
 class TzPing(sp.Contract):
-    def __init__(self, admin, tokenAddress, tokenId):
+    def __init__(self, admin, tokenId, tokenAddress):
         self.init(
             admin = admin,
             channelId = sp.nat(1),
@@ -11,11 +11,11 @@ class TzPing(sp.Contract):
                     owner = sp.TAddress,
                     managers = sp.TSet(sp.TAddress),
                     totalSubscribers = sp.TNat,
-                    ipfsHash = sp.TString
+                    ipfsHash = sp.TString,
                 )
             ),
-            tokenAddress = tokenAddress,
             tokenId = tokenId,
+            tokenAddress = tokenAddress,
             subscribers = sp.big_map(
                 tkey = sp.TAddress,
                 tvalue = sp.TRecord(
@@ -83,7 +83,6 @@ class TzPing(sp.Contract):
             managers = params.managers,
             totalSubscribers = sp.nat(0),
             ipfsHash = params.ipfsHash,
-            token = params.token
         )
 
         self.data.channelId = self.data.channelId + 1
@@ -166,6 +165,11 @@ class TzPing(sp.Contract):
             channelId = sp.TNat,
             ipfsHash = sp.TString
         ))
+
+        sp.verify(
+            (sp.sender == self.data.channels[params.channelId].owner) | (self.data.channels[params.channelId].managers.contains(sp.sender)),
+            message = "NOT_OWNER_OR_MANAGER"
+        )
         
         self.data.notifications[self.data.notificationId] = sp.record(
             channelId = params.channelId,

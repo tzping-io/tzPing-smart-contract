@@ -25,13 +25,6 @@ def test():
     subscriber3 = sp.test_account("subscriber3").address
     subscriber4 = sp.test_account("subscriber4").address
 
-
-    scenario.h2("Initialise contract")
-    c1 = TzPing(
-        admin = sp.address("tz1f85LjxaHfWfPuNtZFg1aVBiaAkVnVnKsH")
-    )
-    scenario += c1
-
     scenario.h2("Initialise FA2 contract")
 
     c2 = FA2(
@@ -41,6 +34,16 @@ def test():
     )
 
     scenario += c2
+
+
+    scenario.h2("Initialise contract")
+    c1 = TzPing(
+        admin = sp.address("tz1f85LjxaHfWfPuNtZFg1aVBiaAkVnVnKsH"),
+        tokenId = sp.nat(0),
+        tokenAddress = c2.address
+    )
+    scenario += c1
+
 
     scenario.h2("Set Admin, failing case")
     c1.setAdmin(
@@ -56,14 +59,14 @@ def test():
     c1.createChannel(
         managers = sp.set([alice, bob, user1]),
         ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7",
-        token = sp.record(tokenAddress = c2.address, tokenId = 0)
+        # token = sp.record(tokenAddress = c2.address, tokenId = 0)
     ).run(sender = user1, valid = False)
 
     scenario.h2("mint tokens")
     tok0_md = FA2.make_metadata(
         name = "The Token Zero",
         decimals = 18,
-        symbol= "TK0" 
+        symbol= "TK0"
     )
 
     c2.mint(
@@ -88,7 +91,7 @@ def test():
     c1.createChannel(
         managers = sp.set([alice, bob, user1]),
         ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7",
-        token = sp.record(tokenAddress = c2.address, tokenId = 0)
+        # token = sp.record(tokenAddress = c2.address, tokenId = 0)
     ).run(sender = user1)
 
     scenario.h2("Setting owner, failing case")
@@ -155,7 +158,7 @@ def test():
     c1.createChannel(
         managers = sp.set([alice, bob]),
         ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7",
-        token = sp.record(tokenAddress = c2.address, tokenId = 0)
+        # token = sp.record(tokenAddress = c2.address, tokenId = 0)
     ).run(sender = user1)
     
     scenario.h2("Subscribe second channel")
@@ -204,10 +207,16 @@ def test():
     c1.sendNotifications(
         channelId = 1,
         ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7"
-    )
+    ).run(sender = user1)
 
     scenario.h2("Send Notification")
     c1.sendNotifications(
         channelId = 2,
         ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7"
-    )
+    ).run(sender = alice)
+    
+    scenario.h2("Send Notification")
+    c1.sendNotifications(
+        channelId = 2,
+        ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7"
+    ).run(sender = user3, valid = False)

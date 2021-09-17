@@ -1,7 +1,7 @@
 import smartpy as sp
 
 class TzPing(sp.Contract):
-    def __init__(self, admin):
+    def __init__(self, admin, tokenAddress, tokenId):
         self.init(
             admin = admin,
             channelId = sp.nat(1),
@@ -11,13 +11,11 @@ class TzPing(sp.Contract):
                     owner = sp.TAddress,
                     managers = sp.TSet(sp.TAddress),
                     totalSubscribers = sp.TNat,
-                    ipfsHash = sp.TString,
-                    token = sp.TRecord(
-                        tokenAddress = sp.TAddress,
-                        tokenId = sp.TNat
-                    )
+                    ipfsHash = sp.TString
                 )
             ),
+            tokenAddress = tokenAddress,
+            tokenId = tokenId,
             subscribers = sp.big_map(
                 tkey = sp.TAddress,
                 tvalue = sp.TRecord(
@@ -47,10 +45,6 @@ class TzPing(sp.Contract):
         sp.set_type(params, sp.TRecord(
             managers = sp.TSet(sp.TAddress),
             ipfsHash = sp.TString,
-            token = sp.TRecord(
-                tokenAddress = sp.TAddress,
-                tokenId = sp.TNat
-            )
         ))
 
         # stake some tokens
@@ -67,7 +61,7 @@ class TzPing(sp.Contract):
             ).layout(("from_", "txs"))
         )
 
-        c = sp.contract(data_type, params.token.tokenAddress, "transfer").open_some()
+        c = sp.contract(data_type, self.data.tokenAddress, "transfer").open_some()
 
         data_to_be_sent = sp.list([
             sp.record(
@@ -76,7 +70,7 @@ class TzPing(sp.Contract):
                     sp.record(
                         amount = 1000,
                         to_ = sp.self_address, 
-                        token_id = params.token.tokenId
+                        token_id = self.data.tokenId
                     )
                 ])
             )

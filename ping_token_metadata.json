@@ -1,0 +1,13 @@
+{
+    "authors": [
+        "TzPing"
+    ],
+    "description": "TzPing - Ping token",
+    "interfaces": [
+        "TZIP-12",
+        "TZIP-16",
+        "TZIP-21"
+    ],
+    "name": "Ping token",
+    "version": "1.0.0"
+}

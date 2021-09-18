@@ -1061,7 +1061,7 @@ def environment_config():
 ##
 ## This specific main uses the relative new feature of non-default tests
 ## for the browser version.
-if "templates" not in __name__:
+if "templates" not in __name__ and __name__ != "__main__":
     add_test(environment_config())
     if not global_parameter("only_environment_test", False):
         add_test(FA2_config(debug_mode = True), is_default = not sp.in_browser)
@@ -1082,6 +1082,6 @@ if "templates" not in __name__:
         add_test(FA2_config(lazy_entry_points = True)
                  , is_default = not sp.in_browser)
 
-    sp.add_compilation_target("FA2_comp", FA2(config = environment_config(),
-                              metadata = sp.utils.metadata_of_url("https://example.com"),
-                              admin = sp.address("tz1M9CMEtsXm3QxA7FmMU2Qh7xzsuGXVbcDr")))
+    # sp.add_compilation_target("FA2_comp", FA2(config = environment_config(),
+    #                           metadata = sp.utils.metadata_of_url("https://example.com"),
+    #                           admin = sp.address("tz1M9CMEtsXm3QxA7FmMU2Qh7xzsuGXVbcDr")))

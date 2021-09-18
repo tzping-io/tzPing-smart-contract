@@ -59,7 +59,6 @@ def test():
     c1.createChannel(
         managers = sp.set([alice, bob, user1]),
         ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7",
-        # token = sp.record(tokenAddress = c2.address, tokenId = 0)
     ).run(sender = user1, valid = False)
 
     scenario.h2("mint tokens")
@@ -91,7 +90,6 @@ def test():
     c1.createChannel(
         managers = sp.set([alice, bob, user1]),
         ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7",
-        # token = sp.record(tokenAddress = c2.address, tokenId = 0)
     ).run(sender = user1)
 
     scenario.h2("Setting owner, failing case")
@@ -158,7 +156,6 @@ def test():
     c1.createChannel(
         managers = sp.set([alice, bob]),
         ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7",
-        # token = sp.record(tokenAddress = c2.address, tokenId = 0)
     ).run(sender = user1)
     
     scenario.h2("Subscribe second channel")

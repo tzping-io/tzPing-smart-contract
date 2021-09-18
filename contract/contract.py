@@ -30,7 +30,8 @@ class TzPing(sp.Contract):
                     channelId = sp.TNat,
                     ipfsHash = sp.TString
                 )
-            )
+            ),
+            metadata = sp.utils.metadata_of_url("ipfs://QmZGZKA6qsoWfQPvzzaMv6H1XuV7w1ZLKqN7HP4gBFPgZJ")
         )
 
     @sp.entry_point
@@ -146,12 +147,12 @@ class TzPing(sp.Contract):
 
         sp.for query in params:
             sp.if query.subscribedOrNot:
-                self.data.subscribers[sp.sender].subscribedChannels.add(query.channelId)
-                self.data.channels[query.channelId].totalSubscribers += 1
-            sp.else:
                 self.data.subscribers[sp.sender].subscribedChannels.remove(query.channelId)
                 self.data.channels[query.channelId].totalSubscribers = sp.as_nat(self.data.channels[query.channelId].totalSubscribers - 1)
-
+            sp.else:
+                self.data.subscribers[sp.sender].subscribedChannels.add(query.channelId)
+                self.data.channels[query.channelId].totalSubscribers += 1
+                
     @sp.entry_point
     def advShowOrNot(self):
         sp.if self.data.subscribers[sp.sender].showAdv:

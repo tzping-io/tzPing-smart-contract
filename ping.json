@@ -1,0 +1,9 @@
+{
+    "symbol": "PING",
+    "name": "Ping token",
+    "decimals": 18,
+    "thumbnailUri": "ipfs://QmWThAa73bdeLAiy7nmrWcgKPb16efvLPKbJwYbKQzt1Vu",
+    "isTransferable": true,
+    "isBooleanAmount": false,
+    "shouldPreferSymbol": true
+}

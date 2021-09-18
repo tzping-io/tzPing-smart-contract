@@ -31,6 +31,15 @@ class TzPing(sp.Contract):
                     ipfsHash = sp.TString
                 )
             ),
+            selectiveNotificationId = sp.nat(1),
+            selectiveNotifications = sp.big_map(
+                tkey = sp.TNat,
+                tvalue = sp.TRecord(
+                    channelId = sp.TNat,
+                    ipfsHash = sp.TString,
+                    receivers = sp.TSet(sp.TAddress)
+                )
+            ),
             metadata = sp.utils.metadata_of_url("ipfs://QmZGZKA6qsoWfQPvzzaMv6H1XuV7w1ZLKqN7HP4gBFPgZJ")
         )
 
@@ -139,20 +148,20 @@ class TzPing(sp.Contract):
             subscribedOrNot = sp.TBool
         )))
 
-        sp.if ~self.data.subscribers.contains(sp.sender):
-            self.data.subscribers[sp.sender] = sp.record(
-                subscribedChannels = sp.set(),
-                showAdv = True
-            )
-
         sp.for query in params:
             sp.if query.subscribedOrNot:
+                sp.if ~self.data.subscribers.contains(sp.sender):
+                    self.data.subscribers[sp.sender] = sp.record(
+                        subscribedChannels = sp.set(),
+                        showAdv = True
+                    )
+                    self.data.channels[query.channelId].totalSubscribers += 1
+                self.data.subscribers[sp.sender].subscribedChannels.add(query.channelId)
+                
+            sp.else:
                 self.data.subscribers[sp.sender].subscribedChannels.remove(query.channelId)
                 self.data.channels[query.channelId].totalSubscribers = sp.as_nat(self.data.channels[query.channelId].totalSubscribers - 1)
-            sp.else:
-                self.data.subscribers[sp.sender].subscribedChannels.add(query.channelId)
-                self.data.channels[query.channelId].totalSubscribers += 1
-                
+
     @sp.entry_point
     def advShowOrNot(self):
         sp.if self.data.subscribers[sp.sender].showAdv:
@@ -179,6 +188,28 @@ class TzPing(sp.Contract):
 
         self.data.notificationId += 1
 
+    @sp.entry_point
+    def selectiveNotifications(self, params):
+        sp.set_type(params, sp.TRecord(
+            channelId = sp.TNat,
+            ipfsHash = sp.TString,
+            receivers = sp.TSet(sp.TAddress)
+        ))
+  
+        sp.verify(
+            (sp.sender == self.data.channels[params.channelId].owner) | (self.data.channels[params.channelId].managers.contains(sp.sender)),
+            message = "NOT_OWNER_OR_MANAGER"
+        )
+        
+        self.data.selectiveNotifications[self.data.selectiveNotificationId] = sp.record(
+            channelId = params.channelId,
+            ipfsHash = params.ipfsHash,
+            receivers = params.receivers
+        )
+
+        self.data.selectiveNotificationId += 1
+
+
     # @sp.entry_point
     # def sendAdv(self, params):
     #     pass
@@ -186,6 +217,5 @@ class TzPing(sp.Contract):
    
     # Todo
     # adv functionality
-    # token deploy
     # deploy contract
-    # test with our token
+    # notification for specific user

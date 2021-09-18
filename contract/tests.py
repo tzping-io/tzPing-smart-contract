@@ -35,7 +35,6 @@ def test():
 
     scenario += c2
 
-
     scenario.h2("Initialise contract")
     c1 = TzPing(
         admin = sp.address("tz1f85LjxaHfWfPuNtZFg1aVBiaAkVnVnKsH"),
@@ -43,7 +42,6 @@ def test():
         tokenAddress = c2.address
     )
     scenario += c1
-
 
     scenario.h2("Set Admin, failing case")
     c1.setAdmin(
@@ -140,7 +138,7 @@ def test():
         subscribedOrNot = True
     )]).run(sender = subscriber1)
 
-    scenario.h2("Subscribe channel 2")
+    scenario.h2("Subscribe channel sub2")
     c1.subscribeOrUnsubscribe([sp.record(
         channelId = 1, 
         subscribedOrNot = True
@@ -159,6 +157,12 @@ def test():
     ).run(sender = user1)
     
     scenario.h2("Subscribe second channel")
+    c1.subscribeOrUnsubscribe([sp.record(
+        channelId = 2, 
+        subscribedOrNot = True
+    )]).run(sender = subscriber1)
+
+    scenario.h2("Subscribe second channel, check")
     c1.subscribeOrUnsubscribe([sp.record(
         channelId = 2, 
         subscribedOrNot = True
@@ -217,3 +221,10 @@ def test():
         channelId = 2,
         ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7"
     ).run(sender = user3, valid = False)
+
+    scenario.h2("Send selective notification")
+    c1.selectiveNotifications(
+        channelId = 2,
+        ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7",
+        receivers = sp.set([subscriber1, subscriber2, subscriber3])
+    ).run(sender = alice)

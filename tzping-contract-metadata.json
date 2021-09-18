@@ -1,0 +1,6 @@
+{
+    "authors": [ "Shwetal Soni <sonishwetal704@gmail.com>","Nishant Chandla <nishantchandla6@gmail.com>" ],
+    "description": "Tezos Push Notification Service",
+    "name": "TzPing",
+    "version": "1.0.0"
+}

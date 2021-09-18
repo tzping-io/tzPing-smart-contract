@@ -40,7 +40,7 @@ class TzPing(sp.Contract):
                     receivers = sp.TSet(sp.TAddress)
                 )
             ),
-            metadata = sp.utils.metadata_of_url("ipfs://QmZGZKA6qsoWfQPvzzaMv6H1XuV7w1ZLKqN7HP4gBFPgZJ")
+            metadata = sp.utils.metadata_of_url("ipfs://QmS2gQbrT6jFuS7uz4GcT68bxtZXnrvmTTevE4DuL3M1zS")
         )
 
     @sp.entry_point

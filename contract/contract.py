@@ -37,7 +37,7 @@ class TzPing(sp.Contract):
                 tvalue = sp.TRecord(
                     channelId = sp.TNat,
                     ipfsHash = sp.TString,
-                    receivers = sp.TSet(sp.TAddress)
+                    receivers = sp.TList(sp.TAddress)
                 )
             ),
             metadata = sp.utils.metadata_of_url("ipfs://QmS2gQbrT6jFuS7uz4GcT68bxtZXnrvmTTevE4DuL3M1zS")
@@ -155,8 +155,9 @@ class TzPing(sp.Contract):
                         subscribedChannels = sp.set(),
                         showAdv = True
                     )
+                sp.if ~self.data.subscribers[sp.sender].subscribedChannels.contains(query.channelId):
                     self.data.channels[query.channelId].totalSubscribers += 1
-                self.data.subscribers[sp.sender].subscribedChannels.add(query.channelId)
+                    self.data.subscribers[sp.sender].subscribedChannels.add(query.channelId)
                 
             sp.else:
                 self.data.subscribers[sp.sender].subscribedChannels.remove(query.channelId)
@@ -193,13 +194,16 @@ class TzPing(sp.Contract):
         sp.set_type(params, sp.TRecord(
             channelId = sp.TNat,
             ipfsHash = sp.TString,
-            receivers = sp.TSet(sp.TAddress)
+            receivers = sp.TList(sp.TAddress)
         ))
   
         sp.verify(
             (sp.sender == self.data.channels[params.channelId].owner) | (self.data.channels[params.channelId].managers.contains(sp.sender)),
             message = "NOT_OWNER_OR_MANAGER"
         )
+
+        sp.for x in params.receivers:
+            sp.verify(self.data.subscribers[x].subscribedChannels.contains(params.channelId), message="NOT_SUBSCRIBER")
         
         self.data.selectiveNotifications[self.data.selectiveNotificationId] = sp.record(
             channelId = params.channelId,

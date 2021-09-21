@@ -224,7 +224,7 @@ def test():
 
     scenario.h2("Send selective notification")
     c1.selectiveNotifications(
-        channelId = 2,
+        channelId = 1,
         ipfsHash = "QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7",
-        receivers = sp.set([subscriber1, subscriber2, subscriber3])
-    ).run(sender = alice)
+        receivers = sp.list([subscriber3, subscriber4])
+    ).run(sender = bob)

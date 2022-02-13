@@ -1,5 +1,8 @@
-.tests
+.run
 .compiled
 __pycache__
 *.pyc
-.config
+.DS_Store
+
+
+

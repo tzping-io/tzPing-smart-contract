@@ -1,6 +1,6 @@
 # ./originate-contract.sh <path to compiled output>
 SMARTPY=~/smartpy-cli/SmartPy.sh
-RPC=https://granadanet.smartpy.io
+RPC=https://hangzhounet.api.tez.ie/
 # RPC=https://api.tez.ie/rpc/mainnet
 
 echo "Originate Contract..."
@@ -18,3 +18,5 @@ fi
 
 
 echo "Done."
+
+
